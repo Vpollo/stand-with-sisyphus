@@ -27,30 +27,10 @@ public class PickUpAndDrop : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            if (!_objectToGrab)
-            {
-                Ray ray = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
-                RaycastHit hit;
-                Debug.DrawRay(playerCameraTransform.position, playerCameraTransform.forward*rayCastDistance, Color.red, 3f);
-                if (Physics.Raycast(ray, out hit, rayCastDistance, pickUpLayerMask))
-                {
-                    _objectToGrab =  hit.transform.GetComponent<ObjectGrabbable>();
-                    _objectToGrab.Grab(playerGrabPositionTransform);
-                    
-                    // Disable player movement
-                    _firstPersonMovement.playerGrabbing = true;
-                }
-            }
-            else
-            {
-                _objectToGrab.Drop();
-                _objectToGrab = null;
-                _firstPersonMovement.playerGrabbing = false;
-                playerGrabPositionTransform.localPosition = _originalGrabPosition;
-            }
+            PickUpOrDrop();
         }
 
-        if (_firstPersonMovement.playerGrabbing && !Input.GetMouseButton(1))
+        if (_firstPersonMovement.playerGrabbing && Input.GetMouseButton(1))
         {
             MoveGrabPoint();
         }
@@ -59,6 +39,31 @@ public class PickUpAndDrop : MonoBehaviour
     private void MoveGrabPoint()
     {
         Vector2 targetVelocity = new Vector2( Input.GetAxis("Horizontal") * grabPositionMoveSpeed, Input.GetAxis("Vertical") * grabPositionMoveSpeed);
-        playerGrabPositionTransform.position += new Vector3(targetVelocity.y * Time.deltaTime, 0f, targetVelocity.x * Time.deltaTime);
+        playerGrabPositionTransform.localPosition += new Vector3(targetVelocity.x * Time.deltaTime, 0f, targetVelocity.y * Time.deltaTime);
+    }
+
+    private void PickUpOrDrop()
+    {
+        if (!_objectToGrab)
+        {
+            Ray ray = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
+            RaycastHit hit;
+            Debug.DrawRay(playerCameraTransform.position, playerCameraTransform.forward*rayCastDistance, Color.red, 3f);
+            if (Physics.Raycast(ray, out hit, rayCastDistance, pickUpLayerMask))
+            {
+                playerGrabPositionTransform.position = hit.transform.position;
+                _objectToGrab =  hit.transform.GetComponent<ObjectGrabbable>();
+                _objectToGrab.Grab(playerGrabPositionTransform);
+                    
+                _firstPersonMovement.playerGrabbing = true;
+            }
+        }
+        else
+        {
+            _objectToGrab.Drop();
+            _objectToGrab = null;
+            _firstPersonMovement.playerGrabbing = false;
+            playerGrabPositionTransform.localPosition = _originalGrabPosition;
+        }
     }
 }
