@@ -30,7 +30,7 @@ public class PickUpAndDrop : MonoBehaviour
             PickUpOrDrop();
         }
 
-        if (_firstPersonMovement.playerGrabbing && Input.GetMouseButton(1))
+        if (_firstPersonMovement.playerGrabbing)
         {
             MoveGrabPoint();
         }
@@ -38,8 +38,15 @@ public class PickUpAndDrop : MonoBehaviour
 
     private void MoveGrabPoint()
     {
-        Vector2 targetVelocity = new Vector2( Input.GetAxis("Horizontal") * grabPositionMoveSpeed, Input.GetAxis("Vertical") * grabPositionMoveSpeed);
-        playerGrabPositionTransform.localPosition += new Vector3(targetVelocity.x * Time.deltaTime, 0f, targetVelocity.y * Time.deltaTime);
+        if (_firstPersonMovement.movingWhileGrab)
+        {
+            playerGrabPositionTransform.position = _objectToGrab.transform.position;
+        }
+        else
+        {
+            Vector2 targetVelocity = new Vector2( Input.GetAxis("Horizontal") * grabPositionMoveSpeed, Input.GetAxis("Vertical") * grabPositionMoveSpeed);
+            playerGrabPositionTransform.localPosition += new Vector3(targetVelocity.x * Time.deltaTime, Input.mouseScrollDelta.y * Time.deltaTime, targetVelocity.y * Time.deltaTime);
+        }
     }
 
     private void PickUpOrDrop()
@@ -63,6 +70,7 @@ public class PickUpAndDrop : MonoBehaviour
             _objectToGrab.Drop();
             _objectToGrab = null;
             _firstPersonMovement.playerGrabbing = false;
+            _firstPersonMovement.movingWhileGrab = false;
             playerGrabPositionTransform.localPosition = _originalGrabPosition;
         }
     }

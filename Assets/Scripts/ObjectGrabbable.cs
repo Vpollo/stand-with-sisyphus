@@ -78,19 +78,19 @@ public class ObjectGrabbable : MonoBehaviour
         // same for z axis using mouse wheel
         if (_beGrabbed && _rotateStopped)
         {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                StartCoroutine(RotateSelf(Vector3.up * -90, rotationLerpTime));
-            }
-            else if (Input.GetKeyDown(KeyCode.E))
+            // if (Input.GetKeyDown(KeyCode.Q))
+            // {
+            //     StartCoroutine(RotateSelf(Vector3.up * -90, rotationLerpTime));
+            // }
+            if (Input.GetKeyDown(KeyCode.E))
             {
                 StartCoroutine(RotateSelf(Vector3.up * 90, rotationLerpTime));
             }
-            else if (Input.mouseScrollDelta.y > 0)
-            {
-                StartCoroutine(RotateSelf(Vector3.right * 90, rotationLerpTime));
-            }
-            else if (Input.mouseScrollDelta.y < 0)
+            // else if (Input.GetKeyDown(KeyCode.R))
+            // {
+            //     StartCoroutine(RotateSelf(Vector3.right * 90, rotationLerpTime));
+            // }
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 StartCoroutine(RotateSelf(Vector3.right * -90, rotationLerpTime));
             }

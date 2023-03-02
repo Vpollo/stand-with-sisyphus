@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FirstPersonMovement : MonoBehaviour
@@ -16,6 +17,7 @@ public class FirstPersonMovement : MonoBehaviour
     public List<System.Func<float>> speedOverrides = new List<System.Func<float>>();
 
     public bool playerGrabbing = false;
+    public bool movingWhileGrab = false;
 
     void Awake()
     {
@@ -25,7 +27,7 @@ public class FirstPersonMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (playerGrabbing && Input.GetMouseButton(1)) return;
+        if (playerGrabbing && !movingWhileGrab) return;
         
         // Update IsRunning from input.
         IsRunning = canRun && Input.GetKey(runningKey);
@@ -42,5 +44,14 @@ public class FirstPersonMovement : MonoBehaviour
 
         // Apply movement.
         rigidbody.velocity = transform.rotation * new Vector3(targetVelocity.x, rigidbody.velocity.y, targetVelocity.y);
+    }
+
+    private void Update()
+    {
+        if (playerGrabbing && Input.GetKeyDown(KeyCode.Q))
+        {
+            Debug.Log("switching...");
+            movingWhileGrab = !movingWhileGrab;
+        }
     }
 }
