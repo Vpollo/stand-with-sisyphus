@@ -9,7 +9,7 @@ using Vector3 = UnityEngine.Vector3;
 public class ObjectGrabbable : MonoBehaviour
 {
     private Rigidbody _rb;
-    private bool _beGrabbed = false;
+    public bool beGrabbed = false;
     public bool _rotateStopped = true;
     private Transform _grabPointTransform;
     private LayerMask _everything = ~0;
@@ -27,7 +27,7 @@ public class ObjectGrabbable : MonoBehaviour
     public void Grab(Transform playerGrabPos)
     {
         _grabPointTransform = playerGrabPos;
-        _beGrabbed = true;
+        beGrabbed = true;
         _rb.useGravity = false;
         _rb.constraints = RigidbodyConstraints.FreezeRotation;
 
@@ -38,7 +38,7 @@ public class ObjectGrabbable : MonoBehaviour
 
     public void Drop()
     {
-        _beGrabbed = false;
+        beGrabbed = false;
         _rb.useGravity = true;
         _rb.constraints = RigidbodyConstraints.None;
 
@@ -47,7 +47,7 @@ public class ObjectGrabbable : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (_beGrabbed)
+        if (beGrabbed)
         {
             // Move to the grab point on player
             Vector3 newPos = Vector3.Lerp(
@@ -76,20 +76,12 @@ public class ObjectGrabbable : MonoBehaviour
     {
         // Rotate to one of four campus directions using Q and E keys (y axis)
         // same for z axis using mouse wheel
-        if (_beGrabbed && _rotateStopped)
+        if (beGrabbed && _rotateStopped)
         {
-            // if (Input.GetKeyDown(KeyCode.Q))
-            // {
-            //     StartCoroutine(RotateSelf(Vector3.up * -90, rotationLerpTime));
-            // }
             if (Input.GetKeyDown(KeyCode.E))
             {
                 StartCoroutine(RotateSelf(Vector3.up * 90, rotationLerpTime));
             }
-            // else if (Input.GetKeyDown(KeyCode.R))
-            // {
-            //     StartCoroutine(RotateSelf(Vector3.right * 90, rotationLerpTime));
-            // }
             if (Input.GetKeyDown(KeyCode.F))
             {
                 StartCoroutine(RotateSelf(Vector3.right * -90, rotationLerpTime));

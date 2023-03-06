@@ -50,7 +50,6 @@ public class FirstPersonMovement : MonoBehaviour
     {
         if (playerGrabbing && Input.GetKeyDown(KeyCode.Q))
         {
-            Debug.Log("switching...");
             movingWhileGrab = !movingWhileGrab;
         }
     }
