@@ -16,6 +16,11 @@ public class PickUpAndDrop : MonoBehaviour
     private Vector3 _originalGrabPosition;
 
     private ObjectGrabbable _objectToGrab;
+    
+    // for outline
+    private RaycastHit hit;
+    private Transform _highlight;
+    private Outline _outline;
 
     private void Awake()
     {
@@ -33,6 +38,10 @@ public class PickUpAndDrop : MonoBehaviour
         if (_firstPersonMovement.playerGrabbing)
         {
             MoveGrabPoint();
+        }
+        else
+        {
+            AddOutLineToPointedBlock();
         }
     }
 
@@ -54,7 +63,6 @@ public class PickUpAndDrop : MonoBehaviour
         if (!_objectToGrab)
         {
             Ray ray = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
-            RaycastHit hit;
             Debug.DrawRay(playerCameraTransform.position, playerCameraTransform.forward*rayCastDistance, Color.red, 3f);
             if (Physics.Raycast(ray, out hit, rayCastDistance, pickUpLayerMask))
             {
@@ -72,6 +80,32 @@ public class PickUpAndDrop : MonoBehaviour
             _firstPersonMovement.playerGrabbing = false;
             _firstPersonMovement.movingWhileGrab = false;
             playerGrabPositionTransform.localPosition = _originalGrabPosition;
+        }
+    }
+
+    private void AddOutLineToPointedBlock()
+    {
+        Ray ray = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.transform.CompareTag("PositionCheckable"))
+            {
+                if (hit.transform == _highlight) return;
+                if (_highlight) _outline.enabled = false;
+                
+                _highlight = hit.transform;
+                _outline = _highlight.GetComponent<Outline>();
+                _outline.enabled = true;
+            }
+            else
+            {
+                if (_highlight)
+                {
+                    _highlight = null;
+                    _outline.enabled = false;
+                    _outline = null;
+                }
+            }
         }
     }
 }

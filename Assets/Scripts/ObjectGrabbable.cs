@@ -16,12 +16,18 @@ public class ObjectGrabbable : MonoBehaviour
     [SerializeField] private float lerpSpeed = 10f;
     [SerializeField] private float rotationLerpTime = 0.2f;
     private LineRenderer _lr;
-    
+    private Outline _outline;
 
     private void Awake()
     {
         _rb = GetComponent<Rigidbody>();
         _lr = GameObject.Find("ProjectionLine").GetComponent<LineRenderer>();
+        _outline = GetComponent<Outline>();
+    }
+
+    private void Start()
+    {
+        _outline.enabled = false;
     }
 
     public void Grab(Transform playerGrabPos)
@@ -34,6 +40,8 @@ public class ObjectGrabbable : MonoBehaviour
         _lr.enabled = true;
         SetProjectionLine();
         SnapToCampusDirection();
+
+        _outline.enabled = true;
     }
 
     public void Drop()
@@ -43,6 +51,8 @@ public class ObjectGrabbable : MonoBehaviour
         _rb.constraints = RigidbodyConstraints.None;
 
         _lr.enabled = false;
+        
+        _outline.enabled = false;
     }
 
     private void FixedUpdate()
