@@ -8,7 +8,7 @@ public class CheckChildPosition : MonoBehaviour
 
     private void Start()
     {
-        Assert.IsTrue(targetPositions.Length == transform.childCount);
+        Assert.IsTrue(targetPositions.Length == transform.parent.childCount-1);
         
         InvokeRepeating(nameof(CheckPositions), 0f, 2f);
     }
@@ -17,7 +17,7 @@ public class CheckChildPosition : MonoBehaviour
     {
         bool[] positionOccupied = new bool[targetPositions.Length];
         
-        foreach (Transform block in GetComponentsInChildren<Transform>())
+        foreach (Transform block in transform.parent.GetComponentsInChildren<Transform>())
         {
             if (block.CompareTag("PositionCheckable"))
             {
@@ -27,7 +27,7 @@ public class CheckChildPosition : MonoBehaviour
                 for (int i = 0; i < targetPositions.Length; i++)
                 {
                     if (positionOccupied[i]) continue;
-                    if (ManhattanDistance(blockPos, targetPositions[i]) < 0.45f)
+                    if (ManhattanDistance(blockPos, targetPositions[i]) < 0.1f)
                         positionOccupied[i] = true;
                 }
             }
