@@ -86,7 +86,7 @@ public class PickUpAndDrop : MonoBehaviour
     private void AddOutLineToPointedBlock()
     {
         Ray ray = new Ray(playerCameraTransform.position, playerCameraTransform.forward);
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, rayCastDistance))
         {
             if (hit.transform.CompareTag("PositionCheckable"))
             {
