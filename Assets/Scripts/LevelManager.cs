@@ -10,7 +10,6 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject tabText;
 
     private bool _playerPressedFirstTime = false;
-    private bool _objectiveShown = false;
 
     [SerializeField] private FirstPersonMovement firstPersonMovement;
     

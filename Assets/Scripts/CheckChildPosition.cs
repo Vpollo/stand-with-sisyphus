@@ -1,8 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -132,6 +129,7 @@ public class CheckChildPosition : MonoBehaviour
         _skyboxMat.SetColor("_Top", skyboxBeginColor);
         AudioManager.S.Stop(orderMusicName);
         AudioManager.S.SetVolume(chaosMusicName, 1f);
+        GameManager.S.LevelComplete(transform.parent.parent.GetComponent<LevelManager>().lvID);
         this.enabled = false;
     }
 
