@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.ShaderKeywordFilter;
 using UnityEngine;
@@ -7,12 +8,15 @@ using UnityEngine.Assertions;
 
 public class CheckChildPosition : MonoBehaviour
 {
-    [SerializeField] private Vector3[] targetPositions;
+    [SerializeField] private GameObject objective;
+    private List<Vector3> _targetPositions;
     private Rigidbody _rb;
 
     private TransformRetracer _transformRetracer;
     private bool _checkPassed = false;
 
+    [Header("Robot Destruction")] 
+    [SerializeField] private GameObject robot;
     [SerializeField] private float timeBeforeDestruction = 5f;
     
     [Header("Skybox Color Change")]
@@ -23,17 +27,33 @@ public class CheckChildPosition : MonoBehaviour
     private Color _prevStartColor;
     private float _prevCompleteness;
 
+    [Header("Music")] 
+    [SerializeField] private float musicLerpTime = 3f;
+    [SerializeField] private string chaosMusicName = "whitenoise";
+    [SerializeField] private string orderMusicName = "Bach";
+    private bool _musicSwitched = false;
+
     private void Awake()
     {
         _skyboxMat = RenderSettings.skybox;
         _skyboxMat.SetColor("_Top", skyboxBeginColor);
         _prevStartColor = skyboxBeginColor;
         _prevCompleteness = 0f;
+        
+        // get all target position from the children of objective
+        _targetPositions = new List<Vector3>();
+        foreach (Transform child in objective.GetComponentsInChildren<Transform>())
+        {
+            if (child != objective.transform)
+            {
+                _targetPositions.Add(child.localPosition);
+            }
+        }
     }
 
     private void Start()
     {
-        Assert.IsTrue(targetPositions.Length == transform.parent.childCount-1);
+        Assert.IsTrue(_targetPositions.Count == transform.parent.childCount-1);
 
         _rb = GetComponent<Rigidbody>();
         _transformRetracer = transform.parent.GetComponent<TransformRetracer>();
@@ -45,7 +65,7 @@ public class CheckChildPosition : MonoBehaviour
     private void CheckPositions()
     {
         if (_checkPassed) return;
-        bool[] positionOccupied = new bool[targetPositions.Length];
+        bool[] positionOccupied = new bool[_targetPositions.Count];
         
         foreach (Transform block in transform.parent.GetComponentsInChildren<Transform>())
         {
@@ -54,10 +74,10 @@ public class CheckChildPosition : MonoBehaviour
                 if (block.GetComponent<ObjectGrabbable>().beGrabbed) return;
 
                 Vector3 blockPos = block.localPosition;
-                for (int i = 0; i < targetPositions.Length; i++)
+                for (int i = 0; i < _targetPositions.Count; i++)
                 {
                     if (positionOccupied[i]) continue;
-                    if (ManhattanDistance(blockPos, targetPositions[i]) < 0.07f)
+                    if (ManhattanDistance(blockPos, _targetPositions[i]) < 0.07f)
                         positionOccupied[i] = true;
                 }
             }
@@ -76,6 +96,11 @@ public class CheckChildPosition : MonoBehaviour
             _prevCompleteness = completeness;
         }
 
+        if (completeness > 0 && !_musicSwitched)
+        {
+            StartCoroutine(LerpMusicVolume());
+        }
+
         if (completeness >= 1f) CheckPass();
     }
 
@@ -85,6 +110,7 @@ public class CheckChildPosition : MonoBehaviour
 
         _rb.isKinematic = false;
         _checkPassed = true;
+        transform.parent.parent.GetComponent<LevelManager>().enabled = false;
         for (int i = 0; i < _transformRetracer.children.Length; i++)
         {
             Transform child = _transformRetracer.children[i];
@@ -101,8 +127,11 @@ public class CheckChildPosition : MonoBehaviour
     IEnumerator InitiateLoop()
     {
         yield return new WaitForSeconds(timeBeforeDestruction);
+        robot.gameObject.SetActive(true);
         _transformRetracer.CheckPass();
         _skyboxMat.SetColor("_Top", skyboxBeginColor);
+        AudioManager.S.Stop(orderMusicName);
+        AudioManager.S.SetVolume(chaosMusicName, 1f);
         this.enabled = false;
     }
 
@@ -111,19 +140,36 @@ public class CheckChildPosition : MonoBehaviour
         Debug.Log("Check Fail");
     }
 
-    IEnumerator LerpSkyboxColor(float completeness)
+    private IEnumerator LerpSkyboxColor(float completeness)
     {
         Debug.Log(completeness);
         float timeElapsed = 0f;
-        while (timeElapsed <= skyboxColorLerpTime)
+        Color lerpEndColor = skyboxEndColor * completeness;
+        while (timeElapsed <= skyboxColorLerpTime + 0.1f) // add 0.1 here to prevent loop from stopping at timeElapsed = slightly smaller than target
         {
             timeElapsed += Time.deltaTime;
-            float t = (timeElapsed / skyboxColorLerpTime) * completeness;
-            _skyboxMat.SetColor("_Top", Color.Lerp(_prevStartColor, skyboxEndColor, t));
+            float t = timeElapsed / skyboxColorLerpTime;
+            _skyboxMat.SetColor("_Top", Color.Lerp(_prevStartColor, lerpEndColor, t));
             yield return null;
         }
 
         _prevStartColor = _skyboxMat.GetColor("_Top");
+    }
+
+    private IEnumerator LerpMusicVolume()
+    {
+        _musicSwitched = true;
+        AudioManager.S.Play(orderMusicName);
+        
+        float timeElapsed = 0f;
+        while (timeElapsed <= musicLerpTime + 0.1)
+        {
+            timeElapsed += Time.deltaTime;
+            float t = timeElapsed / musicLerpTime;
+            AudioManager.S.SetVolume(orderMusicName, Mathf.Lerp(0f, 1f, t));
+            AudioManager.S.SetVolume(chaosMusicName, Mathf.Lerp(0.1f, 1f, 1-t));
+            yield return null;
+        }
     }
 
     private float ManhattanDistance(Vector3 a, Vector3 b)

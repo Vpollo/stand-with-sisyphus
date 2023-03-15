@@ -32,6 +32,7 @@ public class ObjectGrabbable : MonoBehaviour
 
     public void Grab(Transform playerGrabPos)
     {
+        AudioManager.S.Play("pickup");
         _grabPointTransform = playerGrabPos;
         beGrabbed = true;
         _rb.useGravity = false;
@@ -46,6 +47,7 @@ public class ObjectGrabbable : MonoBehaviour
 
     public void Drop()
     {
+        AudioManager.S.Play("drop");
         beGrabbed = false;
         _rb.useGravity = true;
         _rb.constraints = RigidbodyConstraints.None;

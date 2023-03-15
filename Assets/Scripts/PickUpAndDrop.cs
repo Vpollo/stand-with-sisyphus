@@ -66,6 +66,7 @@ public class PickUpAndDrop : MonoBehaviour
             Debug.DrawRay(playerCameraTransform.position, playerCameraTransform.forward*rayCastDistance, Color.red, 3f);
             if (Physics.Raycast(ray, out hit, rayCastDistance, pickUpLayerMask))
             {
+                if (!hit.transform.CompareTag("PositionCheckable")) return;
                 playerGrabPositionTransform.position = hit.transform.position;
                 _objectToGrab =  hit.transform.GetComponent<ObjectGrabbable>();
                 _objectToGrab.Grab(playerGrabPositionTransform);
