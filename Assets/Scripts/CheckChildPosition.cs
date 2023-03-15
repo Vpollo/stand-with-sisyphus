@@ -98,15 +98,34 @@ public class CheckChildPosition : MonoBehaviour
             StartCoroutine(LerpMusicVolume());
         }
 
-        if (completeness >= 1f) CheckPass();
+        if (completeness >= 1f) StartCoroutine(CheckPass());
     }
 
-    private void CheckPass()
+    private IEnumerator CheckPass()
     {
+        _checkPassed = true;
+        // we have to wait for the structure to stabilize before pass
+        yield return new WaitForSeconds(1.5f);
+        Vector3[] maintainPositions = new Vector3[_targetPositions.Count];
+        for (int i = 1; i < transform.parent.childCount; i++)
+        {
+            Transform child = transform.parent.GetChild(i);
+            maintainPositions[i - 1] = child.position;
+        }
+        yield return new WaitForSeconds(3f);
+        for (int i = 1; i < transform.parent.childCount; i++)
+        {
+            Transform child = transform.parent.GetChild(i);
+            if (maintainPositions[i - 1] != child.position)
+            {
+                _checkPassed = false;
+                yield break;
+            }
+        }
+        
         Debug.Log(transform.parent.gameObject.name + " Check Passed");
 
         _rb.isKinematic = false;
-        _checkPassed = true;
         transform.parent.parent.GetComponent<LevelManager>().enabled = false;
         for (int i = 0; i < _transformRetracer.children.Length; i++)
         {
@@ -125,6 +144,7 @@ public class CheckChildPosition : MonoBehaviour
     {
         yield return new WaitForSeconds(timeBeforeDestruction);
         robot.gameObject.SetActive(true);
+        _transformRetracer.RecordOriginalTransform();
         _transformRetracer.CheckPass();
         _skyboxMat.SetColor("_Top", skyboxBeginColor);
         AudioManager.S.Stop(orderMusicName);

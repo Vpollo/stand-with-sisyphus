@@ -24,14 +24,12 @@ public class TransformRetracer : MonoBehaviour
 
     public void CheckPass()
     {
-        RecordOriginalTransform();
-        
         animator.SetTrigger("Sweep");
 
         StartCoroutine(RestoreStructure());
     }
 
-    private void RecordOriginalTransform()
+    public void RecordOriginalTransform()
     {
         for (int i = 0; i < children.Length; i++)
         {
