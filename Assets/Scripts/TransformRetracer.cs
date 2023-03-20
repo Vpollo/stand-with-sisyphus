@@ -1,6 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TransformRetracer : MonoBehaviour
@@ -42,7 +40,6 @@ public class TransformRetracer : MonoBehaviour
     IEnumerator RestoreStructure()
     {
         yield return new WaitForSeconds(timeBeforeRetrace);
-        Debug.Log("start restore");
         for (int i = 1; i < children.Length; i++)
         {
             StartCoroutine(RestoreTransform(i, retraceTime));

@@ -1,11 +1,11 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager S;
-
+    
+    [Header("Game Progression Info")]
     [SerializeField] private GameObject[] tutorials;
     [SerializeField] private GameObject[] levels;
     [SerializeField] private GameObject lv0ExtraFloor;
@@ -38,11 +38,14 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(scene.name);
         }
     }
-
+    
+    // When each level is completed, they will call this function,
+    // and we do specific things depending on which level is finished
     public void LevelComplete(int lvID)
     {
         switch(lvID)
         {
+            // disable the extra floor at beginning, show lv1 and its tutorial
             case 0:
                 lv0ExtraFloor.SetActive(false);
                 levels[1].SetActive(true);

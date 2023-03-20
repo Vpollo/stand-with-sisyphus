@@ -1,7 +1,4 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
 using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
@@ -29,7 +26,8 @@ public class ObjectGrabbable : MonoBehaviour
     {
         _outline.enabled = false;
     }
-
+    
+    // when picked up, snap to compus directions
     public void Grab(Transform playerGrabPos)
     {
         AudioManager.S.Play("pickup");
@@ -86,8 +84,8 @@ public class ObjectGrabbable : MonoBehaviour
 
     private void Update()
     {
-        // Rotate to one of four campus directions using Q and E keys (y axis)
-        // same for z axis using mouse wheel
+        // Rotate to one of four campus directions using E and F keys
+        // Elevation control is in PickUpAndDrop.MoveGrabPoint()
         if (beGrabbed && _rotateStopped)
         {
             if (Input.GetKeyDown(KeyCode.E))

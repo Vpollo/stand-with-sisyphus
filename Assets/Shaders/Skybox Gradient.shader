@@ -1,5 +1,3 @@
-// Made with Amplify Shader Editor
-// Available at the Unity Asset Store - http://u3d.as/y3X 
 Shader "Skybox Gradient"
 {
 	Properties
@@ -132,31 +130,3 @@ Shader "Skybox Gradient"
 		}
 	}
 }
-/*ASEBEGIN
-Version=17900
-583;335;1337;674;1593.788;-18.25439;1;True;False
-Node;AmplifyShaderEditor.ScreenPosInputsNode;2;-1169.49,131.1642;Float;False;0;False;0;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.PosVertexDataNode;11;-1161.67,307.9635;Inherit;False;0;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.RangedFloatNode;7;-792.1788,414.5748;Inherit;False;Property;_mult;mult;2;0;Create;True;0;0;False;0;1;4.92;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.StaticSwitch;13;-889.7883,173.2544;Inherit;False;Property;_Screenspace;Screen space;4;0;Create;True;0;0;False;0;0;0;1;True;;Toggle;2;Key0;Key1;Create;True;9;1;FLOAT;0;False;0;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;4;FLOAT;0;False;5;FLOAT;0;False;6;FLOAT;0;False;7;FLOAT;0;False;8;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;6;-614.1788,236.5748;Inherit;False;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.RangedFloatNode;10;-468.1788,419.5748;Inherit;False;Property;_pwer;pwer;3;0;Create;True;0;0;False;0;1;0.11;0;0;0;1;FLOAT;0
-Node;AmplifyShaderEditor.SaturateNode;9;-440.1788,230.5748;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
-Node;AmplifyShaderEditor.PowerNode;8;-272.1788,210.5748;Inherit;False;False;2;0;FLOAT;0;False;1;FLOAT;1;False;1;FLOAT;0
-Node;AmplifyShaderEditor.ColorNode;4;-608.5,-26.84821;Inherit;False;Property;_Top;Top;0;0;Create;True;0;0;False;0;1,1,1,0;1,0.8153982,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ColorNode;5;-638.7576,-235.1903;Inherit;False;Property;_Bottom;Bottom;1;0;Create;True;0;0;False;0;0,0,0,0;0.009242773,1,0,0;True;0;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.LerpOp;3;-177.5,-1.5;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
-Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;1;217,-21;Float;False;True;-1;2;ASEMaterialInspector;100;1;Skybox Gradient;0770190933193b94aaa3065e307002fa;True;Unlit;0;0;Unlit;2;True;0;1;False;-1;0;False;-1;0;1;False;-1;0;False;-1;True;0;False;-1;0;False;-1;True;False;True;0;False;-1;True;True;True;True;True;0;False;-1;True;False;255;False;-1;255;False;-1;255;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;7;False;-1;1;False;-1;1;False;-1;1;False;-1;True;1;False;-1;True;3;False;-1;True;True;0;False;-1;0;False;-1;True;1;RenderType=Opaque=RenderType;True;2;0;False;False;False;False;False;False;False;False;False;True;1;LightMode=ForwardBase;False;0;;0;0;Standard;1;Vertex Position,InvertActionOnDeselection;1;0;1;True;False;;0
-WireConnection;13;1;11;2
-WireConnection;13;0;2;2
-WireConnection;6;0;13;0
-WireConnection;6;1;7;0
-WireConnection;9;0;6;0
-WireConnection;8;0;9;0
-WireConnection;8;1;10;0
-WireConnection;3;0;5;0
-WireConnection;3;1;4;0
-WireConnection;3;2;8;0
-WireConnection;1;0;3;0
-ASEEND*/
-//CHKSM=10A953E42BF3BDE16D41184C21492EC6476FED6F

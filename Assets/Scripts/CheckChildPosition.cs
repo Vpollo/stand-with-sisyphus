@@ -5,6 +5,7 @@ using UnityEngine.Assertions;
 
 public class CheckChildPosition : MonoBehaviour
 {
+    // put the objective brick collection here
     [SerializeField] private GameObject objective;
     private List<Vector3> _targetPositions;
     private Rigidbody _rb;
@@ -24,10 +25,10 @@ public class CheckChildPosition : MonoBehaviour
     private Color _prevStartColor;
     private float _prevCompleteness;
 
-    [Header("Music")] 
+    [Header("Music Switch")] 
     [SerializeField] private float musicLerpTime = 3f;
     [SerializeField] private string chaosMusicName = "whitenoise";
-    [SerializeField] private string orderMusicName = "Bach";
+    [SerializeField] private string orderMusicName = "EddyCurrents";
     private bool _musicSwitched = false;
 
     private void Awake()
@@ -38,6 +39,7 @@ public class CheckChildPosition : MonoBehaviour
         _prevCompleteness = 0f;
         
         // get all target position from the children of objective
+        // later use this to check against player bricks
         _targetPositions = new List<Vector3>();
         foreach (Transform child in objective.GetComponentsInChildren<Transform>())
         {
@@ -50,12 +52,13 @@ public class CheckChildPosition : MonoBehaviour
 
     private void Start()
     {
-        Assert.IsTrue(_targetPositions.Count == transform.parent.childCount-1);
+        Assert.IsTrue(_targetPositions.Count == transform.parent.childCount-1, $"Level {transform.parent.parent.gameObject.name} have {_targetPositions.Count} target positions but provided {transform.parent.childCount-1} bricks for the player");
 
         _rb = GetComponent<Rigidbody>();
         _transformRetracer = transform.parent.GetComponent<TransformRetracer>();
-        Assert.IsTrue(_transformRetracer);
+        Assert.IsTrue(_transformRetracer, "Need a TransformRetracer component in the brick parent");
         
+        // Check brick positions every 0.5 seconds
         InvokeRepeating(nameof(CheckPositions), 2f, 0.5f);
     }
 
@@ -87,12 +90,15 @@ public class CheckChildPosition : MonoBehaviour
             if (x) completeness += 1f;
         }
         completeness /= (float)positionOccupied.Length;
+        
+        // gradually change the skybox color
         if (completeness != _prevCompleteness)
         {
             StartCoroutine(LerpSkyboxColor(completeness));
             _prevCompleteness = completeness;
         }
-
+        
+        // gradually switch between two bgms
         if (completeness > 0 && !_musicSwitched)
         {
             StartCoroutine(LerpMusicVolume());
@@ -100,7 +106,12 @@ public class CheckChildPosition : MonoBehaviour
 
         if (completeness >= 1f) StartCoroutine(CheckPass());
     }
-
+    
+    // The function to call when completeness check have passed, it does four things:
+    // 1. make sure the structure is stabilized
+    // 2. enable physics on the red static brick
+    // 3. Disable unnecessary components on all bricks
+    // 4. call TransformRetracer to play robot animation and start restore
     private IEnumerator CheckPass()
     {
         _checkPassed = true;
@@ -153,14 +164,8 @@ public class CheckChildPosition : MonoBehaviour
         this.enabled = false;
     }
 
-    private void CheckFail()
-    {
-        Debug.Log("Check Fail");
-    }
-
     private IEnumerator LerpSkyboxColor(float completeness)
     {
-        Debug.Log(completeness);
         float timeElapsed = 0f;
         Color lerpEndColor = skyboxEndColor * completeness;
         while (timeElapsed <= skyboxColorLerpTime + 0.1f) // add 0.1 here to prevent loop from stopping at timeElapsed = slightly smaller than target
@@ -189,7 +194,8 @@ public class CheckChildPosition : MonoBehaviour
             yield return null;
         }
     }
-
+    
+    // helper function to get the manhattan distance between two Vector3
     private float ManhattanDistance(Vector3 a, Vector3 b)
     {
         return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y) + Mathf.Abs(a.z - b.z);
