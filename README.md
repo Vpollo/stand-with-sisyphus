@@ -1,2 +1,2 @@
 # stand-with-sisyphus
-60418 Project 3
+Developed for CMU 60418 "Experimental Game Studio" by Ziyu Li
